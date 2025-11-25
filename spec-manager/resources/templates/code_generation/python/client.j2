@@ -1,0 +1,37 @@
+# Client for {{ api_name }} API
+
+import requests
+import json
+
+class {{ api_name | title | replace('-', '') }}Client:
+    def __init__(self, base_url):
+        self.base_url = base_url
+
+    {% for endpoint, methods in endpoints.items() %}
+    {% for method, details in methods.items() %}
+    def {{ method }}_{{ endpoint | replace('/', '_') | trim_leading_slash | replace('{', '') | replace('}', '') }}(self, {% for param in details.parameters %}{{ param.name }}{% if not loop.last %}, {% endif %}{% endfor %}):
+        """
+        {{ details.summary | default('No summary provided.') }}
+        {% if details.parameters %}
+        Parameters:
+        {% for param in details.parameters %}
+        - {{ param.name }} ({{ param.type }}): {{ param.description | default('') }}
+        {% endfor %}
+        {% endif %}
+        """
+        url = f"{self.base_url}{{ endpoint }}"
+        # TODO: Implement parameter handling (path, query, header, body)
+        # TODO: Implement request execution and response parsing
+        print(f"Calling {{ method | upper }} {url}")
+        # Example:
+        # response = requests.{{ method }}(url)
+        # return response.json()
+        pass
+
+    {% endfor %}
+    {% endfor %}
+
+if __name__ == "__main__":
+    # Example usage (will need actual API definition for full functionality)
+    client = {{ api_name | title | replace('-', '') }}Client("http://localhost:8000")
+    # client.get_users() # Example call

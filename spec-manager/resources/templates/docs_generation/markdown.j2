@@ -1,0 +1,37 @@
+# {{ api_name | default('API Documentation') }}
+
+{{ description | default('No description provided.') }}
+
+## Endpoints
+
+{% for endpoint, methods in endpoints.items() %}
+### `{{ endpoint }}`
+
+{% for method, details in methods.items() %}
+#### {{ method | upper }} `{{ endpoint }}`
+
+**Summary**: {{ details.summary | default('N/A') }}
+
+**Description**: {{ details.description | default('N/A') }}
+
+{% if details.parameters %}
+**Parameters**:
+{% for param in details.parameters %}
+- `{{ param.name }}` ({{ param.in | default('N/A') }}): `{{ param.type | default('string') }}` - {{ param.description | default('N/A') }}
+{% endfor %}
+{% endif %}
+
+{% if details.request_body %}
+**Request Body**:
+{{ details.request_body.description | default('N/A') }}
+{% endif %}
+
+{% if details.responses %}
+**Responses**:
+{% for status, response_details in details.responses.items() %}
+- `{{ status }}`: {{ response_details.description | default('N/A') }}
+{% endfor %}
+{% endif %}
+
+{% endfor %}
+{% endfor %}
