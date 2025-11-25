@@ -2,6 +2,12 @@
 
 This skill empowers an agent to manage Markdown articles by leveraging Large Language Models (LLM) for advanced semantic understanding, categorization, summarization, and even code generation. It transforms a collection of static documents into a dynamic, LLM-powered knowledge and creation assistant.
 
+# Spec Manager Skill (API Specification Management)
+
+This skill provides a comprehensive toolkit for AI Agents to interact with API specifications, fostering spec-driven development practices. It enables the agent to fetch, parse, validate, compare, and generate various artifacts from API specifications, as well as manage change proposals, implementation plans, and task breakdowns. It integrates concepts from OpenSpec and Spec Kit to offer a robust workflow for managing API specifications throughout their lifecycle.
+
+This skill empowers an agent to manage Markdown articles by leveraging Large Language Models (LLM) for advanced semantic understanding, categorization, summarization, and even code generation. It transforms a collection of static documents into a dynamic, LLM-powered knowledge and creation assistant.
+
 ## Agent Environment Setup
 
 To enable this skill, ensure the following Python packages are installed in the agent's execution environment:
