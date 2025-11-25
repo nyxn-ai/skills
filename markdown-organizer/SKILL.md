@@ -58,6 +58,7 @@ When invoked with a task related to organizing or summarizing Markdown content, 
 *   `scripts/organizer.py`: Handles file system operations to move categorized articles into designated directories.
 *   `scripts/summarizer.py`: Prepares an LLM prompt for summarizing an article and formats category summary files.
 *   `scripts/search_engine.py`: Provides keyword-based search functionality across Markdown articles.
+*   `scripts/code_generator.py`: Sets up LLM prompts for generating code snippets from article content.
 
 ## Example Invocation (Conceptual)
 
