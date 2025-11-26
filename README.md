@@ -17,7 +17,7 @@ This repository serves as a central collection point for various skills designed
     *   **Path**: `prompt-optimizer/`
 
 *   **spec-manager**
-    *   **Description**: This skill provides a comprehensive toolkit for AI Agents to interact with API specifications, fostering spec-driven development practices. It enables the agent to fetch, parse, validate, compare, and generate various artifacts from API specifications, as well as manage change proposals, implementation plans, and task breakdowns. It integrates concepts from OpenSpec and Spec Kit to offer a robust workflow for managing API specifications throughout their lifecycle.
+    *   **Description**: This skill equips AI Agents with a unified workflow engine for comprehensive spec-driven development, including multi-project support and project discovery. It integrates best practices from OpenSpec and Spec Kit to streamline the entire API lifecycle—from project initialization with optional Git integration, interactive requirement clarification, and TDD-focused task breakdowns, to automated code implementation and change archiving. It empowers agents to fetch, parse, validate, compare, and generate various artifacts from API definitions.
     *   **Path**: `spec-manager/`
 
 ## Contributing New Skills

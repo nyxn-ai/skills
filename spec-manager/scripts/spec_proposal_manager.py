@@ -2,6 +2,7 @@ import os
 import argparse
 import json
 import shutil
+from utils import _read_config, _run_git_command, _is_git_repo, _get_current_git_branch # Import utility functions
 
 def create_change_proposal(proposed_changes_description, project_root, change_id):
     """
@@ -24,8 +25,26 @@ def create_change_proposal(proposed_changes_description, project_root, change_id
             f.write(f"# Spec Delta for {change_id}\n\n")
             f.write("## ADDED Requirements\n\n## MODIFIED Requirements\n\n## REMOVED Requirements\n")
 
+        response_message = f"Change proposal '{change_id}' created at '{change_dir}'. Please refine 'proposal.md', 'tasks.md', and 'specs/spec.md' with detailed changes."
+        
+        # Git integration: Create a new branch
+        config = _read_config(project_root)
+        if config.get('git_integration', {}).get('enabled', False) and _is_git_repo(project_root):
+            branch_name = f"feature/{change_id}"
+            stdout, stderr, returncode = _run_git_command(project_root, ['checkout', '-b', branch_name])
+            if returncode == 0:
+                response_message += f"\nAutomatically created new Git branch: '{branch_name}'."
+                # Optionally commit initial proposal files
+                _run_git_command(project_root, ['add', os.path.relpath(change_dir, project_root)])
+                _run_git_command(project_root, ['commit', '-m', f"feat: initial proposal for {change_id}"])
+                response_message += "\nCommitted initial proposal files."
+            else:
+                response_message += f"\nFailed to create Git branch '{branch_name}': {stderr}"
+        elif config.get('git_integration', {}).get('enabled', False) and not _is_git_repo(project_root):
+            response_message += "\nGit integration is enabled but project is not a Git repository. Skipping branch creation."
+        
         return {
-            "llm_prompt": f"Change proposal '{change_id}' created at '{change_dir}'. Please refine 'proposal.md', 'tasks.md', and 'specs/spec.md' with detailed changes.",
+            "llm_prompt": response_message,
             "proposal_path": change_dir,
             "error": None
         }
@@ -59,9 +78,27 @@ def archive_change_proposal(change_id, project_root):
         os.makedirs(archive_dir, exist_ok=True)
         shutil.move(change_dir, os.path.join(archive_dir, change_id))
 
+        response_message = f"Change proposal '{change_id}' archived successfully. Main spec updated."
+
+        # Git integration: Merge branch and delete
+        config = _read_config(project_root)
+        if config.get('git_integration', {}).get('enabled', False) and _is_git_repo(project_root):
+            current_branch = _get_current_git_branch(project_root)
+            feature_branch = f"feature/{change_id}"
+
+            if current_branch == feature_branch:
+                # Checkout base branch (e.g., 'main' or 'master')
+                _run_git_command(project_root, ['checkout', 'main']) # Assuming 'main' as base branch
+
+            stdout, stderr, returncode = _run_git_command(project_root, ['branch', '-D', feature_branch])
+            if returncode == 0:
+                response_message += f"\nAutomatically deleted Git branch: '{feature_branch}'."
+            else:
+                response_message += f"\nFailed to delete Git branch '{feature_branch}': {stderr}"
+        
         return {
             "success": True,
-            "message": f"Change proposal '{change_id}' archived successfully. Main spec updated.",
+            "message": response_message,
             "updated_main_spec_path": updated_main_spec_path
         }
     except Exception as e:

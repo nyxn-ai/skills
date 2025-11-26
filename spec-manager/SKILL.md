@@ -9,134 +9,32 @@ This skill provides a comprehensive toolkit for AI Agents to interact with API s
 
 ## Actions
 
-### `init_spec_project`
-*   **Purpose**: Initializes a project for spec-driven development, setting up the required directory structure and foundational files.
+### `spec_manager`
+*   **Purpose**: Orchestrates the entire spec-driven development workflow, providing a unified interface for all stages from project initialization to code implementation.
 *   **Inputs**:
-    *   `project_root` (string, required): The root directory of the project to initialize.
+    *   `step` (string, required): The specific workflow step to execute. Supported steps include:
+        *   `"init"`: Initializes a new spec-driven project.
+        *   `"define_principles"`: Defines or updates project guiding principles.
+        *   `"proposal"`: Creates a new change proposal.
+        *   `"plan"`: Generates a high-level implementation plan.
+        *   `"tasks"`: Refines the plan into a detailed task list.
+        *   `"implement"`: Orchestrates the execution of tasks for a change proposal.
+        *   `"archive"`: Archives a completed change proposal.
+        *   `"fetch"`: Fetches API specification content.
+        *   `"parse"`: Parses API specification content.
+        *   `"validate"`: Validates API specifications.
+        *   `"generate_code"`: Generates code from API specifications.
+        *   `"generate_docs"`: Generates documentation from API specifications.
+        *   `"compare"`: Compares two API specifications.
+        *   `"clarify"`: Analyzes a change proposal for vague language and generates clarifying questions.
+        *   `"list_projects"`: Scans a directory for OpenSpec projects and returns a list of their names and roots.
+    *   `kwargs` (object, optional): A dictionary of keyword arguments specific to the chosen `step`. Refer to the individual script documentation for required arguments for each step.
 *   **Outputs**:
-    *   `success` (boolean): `true` if initialization was successful, `false` otherwise.
-    *   `message` (string, optional): A success or error message.
-
-### `define_principles`
-*   **Purpose**: Allows the user to define or update the project's governing principles and development guidelines.
-*   **Inputs**:
-    *   `principles_content` (string, required): The content of the principles (Markdown format).
-    *   `project_root` (string, required): The root directory of the project where `openspec/` is located.
-*   **Outputs**:
-    *   `success` (boolean): `true` if principles were successfully defined/updated, `false` otherwise.
-    *   `message` (string, optional): A success or error message.
-
-### `fetch_spec`
-*   **Purpose**: Fetches API specification content from a local file path or a remote URL.
-*   **Inputs**:
-    *   `source_path` (string, required): The file path or URL to the API specification.
-    *   `spec_format` (string, optional): The format of the specification (e.g., "OpenAPI", "Swagger", "AsyncAPI"). If not provided, the skill will attempt to infer it.
-*   **Outputs**:
-    *   `spec_content` (string): The content of the specification as a string.
-    *   `error` (string, optional): An error message if fetching fails.
-
-### `parse_spec`
-*   **Purpose**: Parses the given API specification content and extracts key information such as endpoints, methods, request/response models, and security definitions.
-*   **Inputs**:
-    *   `spec_content` (string, required): The content of the API specification.
-    *   `spec_format` (string, optional): The format of the specification.
-*   **Outputs**:
-    *   `parsed_data` (object): A structured representation (e.g., Python dictionary) of the specification's key elements.
-    *   `error` (string, optional): An error message if parsing fails.
-
-### `validate_spec`
-*   **Purpose**: Validates the API specification against its standard (e.g., OpenAPI Specification) for correctness and consistency.
-*   **Inputs**:
-    *   `spec_content` (string, required): The content of the API specification.
-    *   `spec_format` (string, optional): The format of the specification.
-*   **Outputs**:
-    *   `is_valid` (boolean): `true` if the specification is valid, `false` otherwise.
-    *   `validation_messages` (list of strings, optional): Detailed error or warning messages.
-
-### `generate_code_from_spec`
-*   **Purpose**: Generates client SDKs, server stubs, data models, or controller code based on the API specification.
-*   **Inputs**:
-    *   `spec_content` (string, required): The content of the API specification.
-    *   `target_language` (string, required): The programming language for code generation (e.g., "Python", "TypeScript", "Java").
-    *   `code_type` (string, optional): The type of code to generate (e.g., "client", "server-stub", "models"). Defaults to "client".
-    *   `output_dir` (string, optional): The directory where the generated code should be saved. Defaults to a temporary directory.
-*   **Outputs**:
-    *   `llm_prompt` (string): A prompt for the AI Agent to perform the actual code generation, detailing the context and requirements.
-    *   `output_path` (string, optional): The path to the generated code files (if skill generates directly).
-    *   `error` (string, optional): An error message if generation setup fails.
-
-### `generate_docs_from_spec`
-*   **Purpose**: Generates developer documentation or API reference pages from the API specification.
-*   **Inputs**:
-    *   `spec_content` (string, required): The content of the API specification.
-    *   `doc_format` (string, optional): The format of the documentation (e.g., "Markdown", "HTML"). Defaults to "Markdown".
-    *   `output_dir` (string, optional): The directory where the generated documentation should be saved. Defaults to a temporary directory.
-*   **Outputs**:
-    *   `llm_prompt` (string): A prompt for the AI Agent to perform the actual documentation generation.
-    *   `output_path` (string, optional): The path to the generated documentation files.
-    *   `error` (string, optional): An error message if generation setup fails.
-
-### `compare_specs`
-*   **Purpose**: Compares two API specifications (or different versions of the same spec) to identify differences (added, modified, or removed endpoints/models).
-*   **Inputs**:
-    *   `spec_content_a` (string, required): The content of the first API specification.
-    *   `spec_content_b` (string, required): The content of the second API specification.
-    *   `spec_format` (string, optional): The format of the specifications.
-*   **Outputs**:
-    *   `diff_report` (object): A structured report detailing the differences.
-    *   `error` (string, optional): An error message if comparison fails.
-
-### `create_change_proposal`
-*   **Purpose**: Assists the AI Agent in creating structured API specification change proposals, including proposed changes, task lists, and spec deltas.
-*   **Inputs**:
-    *   `proposed_changes_description` (string, required): A natural language description of the proposed changes.
-    *   `original_spec_content` (string, optional): The content of the original API specification, if available for diffing.
-    *   `output_dir` (string, optional): The directory to create the proposal files.
-*   **Outputs**:
-    *   `llm_prompt` (string): A prompt for the AI Agent to generate the actual proposal files (e.g., `proposal.md`, `tasks.md`, `spec_deltas`).
-    *   `proposal_path` (string, optional): The path to the created proposal directory.
-    *   `error` (string, optional): An error message if proposal setup fails.
-
-### `generate_plan`
-*   **Purpose**: Generates a high-level technical implementation plan based on a given spec delta and project principles.
-*   **Inputs**:
-    *   `change_id` (string, required): The identifier of the change proposal.
-    *   `project_root` (string, required): The root directory of the project where `openspec/` is located.
-*   **Outputs**:
-    *   `llm_prompt` (string): A prompt for the AI Agent to perform the actual plan generation.
-    *   `plan_path` (string, optional): The path to the generated plan file.
-    *   `error` (string, optional): An error message if generation setup fails.
-
-### `breakdown_tasks`
-*   **Purpose**: Refines the implementation plan into a detailed, actionable task list.
-*   **Inputs**:
-    *   `change_id` (string, required): The identifier of the change proposal.
-    *   `project_root` (string, required): The root directory of the project where `openspec/` is located.
-*   **Outputs**:
-    *   `llm_prompt` (string): A prompt for the AI Agent to perform the actual task breakdown.
-    *   `tasks_path` (string, optional): The path to the generated tasks file.
-    *   `error` (string, optional): An error message if breakdown setup fails.
-
-### `archive_change_proposal`
-*   **Purpose**: Merges approved specification changes from a proposal into the main specification and archives the change files.
-*   **Inputs**:
-    *   `change_id` (string, required): The identifier of the change proposal to archive.
-    *   `base_dir` (string, required): The base directory where the change proposal is located.
-*   **Outputs**:
-    *   `success` (boolean): `true` if archiving was successful, `false` otherwise.
-    *   `message` (string, optional): A success or error message.
-    *   `updated_main_spec_path` (string, optional): The path to the updated main specification.
+    *   The output varies depending on the `step` executed. It will typically include a `success` status, a `message`, and any step-specific data (e.g., `llm_prompt`, `output_path`, `parsed_data`, `diff_report`).
 
 ## Implementation Details
 
-This skill utilizes Python scripts in the `scripts/` directory for its functionalities.
-
-*   `project_initializer.py`: Implements `init_spec_project` and `define_principles`.
-*   `spec_proposal_manager.py`: Implements `create_change_proposal` and `archive_change_proposal`.
-*   `spec_planner.py`: Implements `generate_plan` and `breakdown_tasks`.
-*   Other scripts (e.g., `spec_parser.py`, `spec_validator.py`, `code_generator.py`, `doc_generator.py`, `spec_comparer.py`, `spec_fetcher.py`, `change_manager.py`): Implement the remaining tasks (`fetch_spec`, `parse_spec`, `validate_spec`, `generate_code_from_spec`, `generate_docs_from_spec`, `compare_specs`).
-
-Templates for code and documentation generation are located in the `resources/templates/` directory.
+This skill utilizes a main dispatcher script (`main.py`) in the `scripts/` directory to orchestrate all its functionalities. All individual workflow steps are handled internally by this dispatcher.
 
 ## Prerequisites
 

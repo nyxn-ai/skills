@@ -44,7 +44,7 @@ def breakdown_tasks(change_id, project_root):
         with open(tasks_path, 'w') as f:
             f.write(tasks_content)
         
-        return {"llm_prompt": "Please generate a detailed, actionable task list in 'tasks.md' based on the implementation plan.",
+        return {"llm_prompt": "Please generate a detailed, actionable task list in 'tasks.md' based on the implementation plan.\nThis list should follow a Test-Driven Development (TDD) approach, including tasks for writing tests *before* implementing the corresponding features, and tasks to run/verify these tests.\n**Crucially, append ` [TEST_TASK]` to the end of any task that involves running or verifying tests. This tag is important for automation.**",
                 "tasks_path": tasks_path,
                 "error": None}
     except Exception as e:

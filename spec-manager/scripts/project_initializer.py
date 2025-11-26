@@ -1,8 +1,9 @@
 import os
 import argparse
 import json
+import yaml # Added for YAML handling
 
-def init_spec_project(project_root):
+def init_spec_project(project_root, git_enabled=False): # Added git_enabled parameter
     """
     Initializes a project for spec-driven development, setting up the required directory structure and foundational files.
     """
@@ -18,9 +19,14 @@ def init_spec_project(project_root):
         with open(os.path.join(openspec_dir, 'constitution.md'), 'w') as f:
             f.write("# Project Principles\n\nDefine your project's guiding principles and development guidelines here.")
 
-        return {"success": True, "message": f"OpenSpec project initialized at {project_root}"}
+        # Create config.yaml and save git_enabled status
+        config_path = os.path.join(openspec_dir, 'config.yaml')
+        with open(config_path, 'w') as f:
+            yaml.dump({'git_integration': {'enabled': git_enabled}}, f)
+
+        return {"success": True, "message": f"OpenSpec project initialized at {project_root}", "git_enabled": git_enabled}
     except Exception as e:
-        return {"success": False, "message": str(e)}
+        return {"success": False, "message": str(e), "git_enabled": False}
 
 def define_principles(principles_content, project_root):
     """
@@ -44,11 +50,12 @@ if __name__ == "__main__":
     parser.add_argument("action", choices=["init_spec_project", "define_principles"], help="Action to perform.")
     parser.add_argument("--project_root", required=True, help="The root directory of the project.")
     parser.add_argument("--principles_content", help="The content for project principles (required for define_principles action).")
+    parser.add_argument("--git_enabled", action='store_true', help="Enable Git integration during project initialization.") # Added git_enabled arg
 
     args = parser.parse_args()
 
     if args.action == "init_spec_project":
-        result = init_spec_project(args.project_root)
+        result = init_spec_project(args.project_root, args.git_enabled) # Pass git_enabled
     elif args.action == "define_principles":
         if not args.principles_content:
             result = {"success": False, "message": "--principles_content is required for define_principles action."}
