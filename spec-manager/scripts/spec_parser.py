@@ -1,8 +1,9 @@
 # spec-manager/scripts/spec_parser.py
 import json
 import yaml
+from typing import Dict, Any, Optional
 
-def parse_spec(spec_content, spec_format=None):
+def parse_spec(spec_content: str, spec_format: Optional[str] = None) -> Dict[str, Any]:
     """
     Parses the given API specification content and extracts key information.
     Currently, this is a basic parser for OpenAPI/Swagger-like structures.

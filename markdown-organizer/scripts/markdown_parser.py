@@ -1,8 +1,9 @@
 # scripts/markdown_parser.py
 from markdown_it import MarkdownIt
 import os
+from typing import Dict, Any
 
-def parse_markdown(file_path):
+def parse_markdown(file_path: str) -> Dict[str, Any]:
     """
     Parses a Markdown file and extracts its content, headings, and plain text.
     """

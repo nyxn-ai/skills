@@ -1,9 +1,10 @@
 # scripts/categorizer.py
 import json
 import os
+from typing import Dict, Any, List, Optional
 from .markdown_parser import parse_markdown # Relative import
 
-def categorize_content_llm_prompt(file_path, categories_list=None):
+def categorize_content_llm_prompt(file_path: str, categories_list: Optional[List[str]] = None) -> Dict[str, Any]:
     """
     Prepares a prompt for an LLM to categorize the given Markdown file.
     """

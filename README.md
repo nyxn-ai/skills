@@ -8,6 +8,14 @@ This repository serves as a central collection point for various skills designed
     *   **Description**: This skill empowers an agent to manage Markdown articles by leveraging Large Language Models (LLM) for advanced semantic understanding, categorization, summarization, and even code generation. It transforms a collection of static documents into a dynamic, LLM-powered knowledge and creation assistant.
     *   **Path**: `markdown-organizer/`
 
+*   **mcp-tool-factory**
+    *   **Description**: A skill for creating new MCP tools in Python using a standardized class-based pattern. Use this to quickly bootstrap new tools for a FastMCP server, ensuring consistency and adherence to best practices for tool registration.
+    *   **Path**: `mcp-tool-factory/`
+
+*   **prompt-optimizer**
+    *   **Description**: A skill to guide users in crafting token-efficient prompts for tool-using AI agents. Use this when you want to learn how to write better prompts to get faster, more accurate results and save costs.
+    *   **Path**: `prompt-optimizer/`
+
 *   **spec-manager**
     *   **Description**: This skill provides a comprehensive toolkit for AI Agents to interact with API specifications, fostering spec-driven development practices. It enables the agent to fetch, parse, validate, compare, and generate various artifacts from API specifications, as well as manage change proposals, implementation plans, and task breakdowns. It integrates concepts from OpenSpec and Spec Kit to offer a robust workflow for managing API specifications throughout their lifecycle.
     *   **Path**: `spec-manager/`

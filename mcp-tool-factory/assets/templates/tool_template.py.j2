@@ -1,0 +1,96 @@
+# {{ file_name }}
+
+from mcp.fast_mcp import FastMCP
+from pydantic import BaseModel, Field
+
+class {{ class_name }}Args(BaseModel):
+    # TODO: Define your tool's arguments here
+    # Example:
+    # item_id: str = Field(description="The ID of the item to retrieve.")
+    pass
+
+class {{ class_name }}:
+    def __init__(self, mcp: FastMCP):
+        # Register the tool's method with the MCP server
+        # The tool name here will be how the AI agent invokes it
+        mcp.register_tool(self.execute, "{{ tool_name }}")
+        self.mcp = mcp
+        print(f"Registered tool: '{{ tool_name }}'")
+
+    def execute(self, args: {{ class_name }}Args):
+        """
+        TODO: Add a concise description of what this tool does here.
+        This function performs the specific action for the '{{ tool_name }}' tool.
+        """
+        # TODO: Implement your tool's logic here
+        # You can access arguments via args.<argument_name>
+        print(f"'{{ tool_name }}' tool executed with args: {args}")
+        
+        # Example of returning a result
+        return {"status": "success", "message": f"'{{ tool_name }}' executed successfully with {args}"}
+
+# Example of how to instantiate and register (for local testing/demonstration)
+if __name__ == "__main__":
+    # This part is for demonstration or local testing
+    # In a real scenario, this would be handled by your MCP server's setup
+    print(f"--- Local Test for '{{ tool_name }}' Tool ---")
+
+    class MockFastMCP:
+        def __init__(self):
+            self._registered_tools = {}
+
+        def register_tool(self, func, name):
+            self._registered_tools[name] = func
+            print(f"Mock MCP: Registered tool '{name}'")
+
+        def run_tool(self, name, args):
+            print(f"Mock MCP: Attempting to run tool '{name}' with args: {args}")
+            if name in self._registered_tools:
+                try:
+                    # Manually validate args for mock run
+                    if hasattr(self._registered_tools[name], '__annotations__') and 'args' in self._registered_tools[name].__annotations__:
+                        arg_model = self._registered_tools[name].__annotations__['args']
+                        validated_args = arg_model(**args)
+                    else:
+                        validated_args = args # Fallback if no Pydantic model is annotated
+
+                    result = self._registered_tools[name](validated_args)
+                    print(f"Mock MCP: Tool '{name}' returned: {result}")
+                    return result
+                except Exception as e:
+                    print(f"Mock MCP: Error running tool '{name}': {e}", file=sys.stderr)
+                    return {"status": "error", "message": str(e)}
+            else:
+                print(f"Mock MCP: Tool '{name}' not registered.", file=sys.stderr)
+                return {"status": "error", "message": f"Tool '{name}' not registered."}  
+
+    mock_mcp = MockFastMCP()
+    
+    # Instantiate and register the tool
+    tool_instance = {{ class_name }}(mock_mcp)
+
+    # Example of running the tool via the mock MCP
+    print("\n--- Running mock tool ---")
+    mock_args = {} # Default to empty if no args are defined, or fill with example data
+    if hasattr({{ class_name }}Args, '__fields__') and {{ class_name }}Args.__fields__:
+        # Attempt to create some mock arguments if Pydantic model has fields
+        mock_args = {field_name: "example_str" if field.type_ is str else 123 if field.type_ is int else True for field_name, field in {{ class_name }}Args.__fields__.items()}
+        if not mock_args: # If fields exist but are complex, still default to empty
+            mock_args = {}
+
+
+    if mock_args:
+        print(f"Using mock args: {mock_args}")
+        result = mock_mcp.run_tool("{{ tool_name }}", mock_args)
+    else:
+        print("No specific arguments defined for mock run (or Pydantic model is empty).")
+        print("Attempting to run with empty args...")
+        try:
+            result = mock_mcp.run_tool("{{ tool_name }}", {{}})
+        except Exception as e:
+            print(f"Error during empty args run: {e}", file=sys.stderr)
+            result = {"status": "error", "message": f"Error running with empty args: {e}"}
+    
+    print(f"Final mock run result: {result}")
+
+    print(f"--- End Local Test for '{{ tool_name }}' Tool ---")
